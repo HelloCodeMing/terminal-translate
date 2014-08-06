@@ -1,5 +1,5 @@
 #description
-This script is used to translate English into Chinese in terminate.
+This script could translate English into Chinese in terminal.
 
 # dependencies
 lua
