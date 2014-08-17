@@ -1,16 +1,24 @@
-#!/usr/local/bin/lua
+#!/usr/bin/lua
 
 local query = arg[1]
 if (string.find(query, " ")) then
-	print("I'm sorry to tell you that this script could not translate a sentence.\n")
+	print("I could not translate a sentence.")
 	return
 end
 os.execute("curl -so '/tmp/translate.tmp' http://dict.youdao.com/search?q="..query)
 io.input("/tmp/translate.tmp")
 local file = io.read("*all")
-local data = string.match(file, "<div class=%ptrans%-container.-</div>")
-data = string.match(data, "<ul>.*</ul>")
-print("\t" .. query)
-for f in string.gmatch(data, "<li>(.-)</li>") do
-	print("\t".. f)
+local status, data = pcall(function()
+	local data = string.match(file, "<div class=%ptrans%-container.-</div>")
+	data = string.match(data, "<ul>.*</ul>")
+	return data
+end
+)
+if not status then
+	print "No such word, I'm sorry."
+else
+	print("\t" .. query)
+	for f in string.gmatch(data, "<li>(.-)</li>") do
+		print("\t".. f)
+	end
 end
